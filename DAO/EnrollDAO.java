@@ -23,7 +23,7 @@ public class EnrollDAO {
 	public EnrollDAO(String connectionString, String dbName) {
 		mongoClient = MongoClients.create(connectionString);
 		database = mongoClient.getDatabase(dbName);
-		collection = database.getCollection("nhaHang");
+		collection = database.getCollection("Enroll");
 	}
 		
 	public int insertOne(Enroll e)
