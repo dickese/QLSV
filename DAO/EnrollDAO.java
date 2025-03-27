@@ -17,31 +17,29 @@ import DB.Connect;
 import Enroll.Enroll;
 
 public class EnrollDAO {
-	private MongoCollection<Document> col;
-	public static EnrollDAO getInstance(){
-		return new EnrollDAO();
+	private MongoClient mongoClient;
+	private MongoDatabase database;
+	private MongoCollection<Document> collection;
+	public EnrollDAO(String connectionString, String dbName) {
+		mongoClient = MongoClients.create(connectionString);
+		database = mongoClient.getDatabase(dbName);
+		collection = database.getCollection("nhaHang");
 	}
-	
+		
 	public int insertOne(Enroll e)
 	{
-		Connect c = new Connect();
-		c.getDatabase();
-		col = c.getCollection();
 		Document doc = new Document("_id",e.getEnroll_id().toString());
 		doc.append("student_id",e.getStudent_id().toString());
 		doc.append("subject_id",e.getSubject_id().toString());
 		doc.append("semester",e.getSemester().toString());
 		doc.append("status",e.getStatus().toString());
-		col.insertOne(doc);
+		collection.insertOne(doc);
 		System.out.println("Insert succes");
 		return 1;
 	}
 	public int UpdateOne(Enroll e)
 	{
-		Connect c = new Connect();
-		c.getDatabase();
-		col = c.getCollection();
-		col.updateOne(Filters.eq("_id",e.getEnroll_id().toString()),Updates.combine(
+		collection.updateOne(Filters.eq("_id",e.getEnroll_id().toString()),Updates.combine(
 				Updates.set("student_id",e.getStudent_id().toString()),
 				Updates.set("subject_id",e.getStudent_id().toString()),
 				Updates.set("semester",e.getSemester().toString()),
@@ -52,10 +50,7 @@ public class EnrollDAO {
 	}
 	public int delete(Enroll e)
 	{
-		Connect c = new Connect();
-		c.getDatabase();
-		col = c.getCollection();
-		col.deleteOne(Filters.eq("_id",e.getEnroll_id().toString()));
+		collection.deleteOne(Filters.eq("_id",e.getEnroll_id().toString()));
 		System.out.println("Delete succes");
 		return 1;
 	}
