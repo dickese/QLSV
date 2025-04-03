@@ -15,7 +15,7 @@ import com.mongodb.client.model.Updates;
 
 import DB.Connect;
 import Enroll.Enroll;
-
+import static com.mongodb.client.model.Filters.eq;
 public class EnrollDAO {
 	private MongoClient mongoClient;
 	private MongoDatabase database;
@@ -23,9 +23,11 @@ public class EnrollDAO {
 	public EnrollDAO(String connectionString, String dbName) {
 		mongoClient = MongoClients.create(connectionString);
 		database = mongoClient.getDatabase(dbName);
-		collection = database.getCollection("Enroll");
+		collection = database.getCollection("nhaHang");
 	}
-		
+	public Document getById(String id) {
+	    return collection.find(eq("_id", id)).first();
+	}
 	public int insertOne(Enroll e)
 	{
 		Document doc = new Document("_id",e.getEnroll_id().toString());
@@ -37,7 +39,7 @@ public class EnrollDAO {
 		System.out.println("Insert succes");
 		return 1;
 	}
-	public int UpdateOne(Enroll e)
+	public int UpdateOne(String id,Enroll e)
 	{
 		collection.updateOne(Filters.eq("_id",e.getEnroll_id().toString()),Updates.combine(
 				Updates.set("student_id",e.getStudent_id().toString()),
